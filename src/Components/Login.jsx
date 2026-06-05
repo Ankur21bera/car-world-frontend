@@ -150,7 +150,7 @@ const Login = ({ setShowLogin }) => {
   );
 
   if (registerUser.fulfilled.match(result)) {
-    toast.success(result.payload.message);
+    // toast.success(result.payload.message);
     setShowLogin(false);
   } else {
     toast.error(
