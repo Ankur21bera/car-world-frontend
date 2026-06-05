@@ -20,12 +20,15 @@ export const registerUser = createAsyncThunk(
         `${backendUrl}/register`,
         formData
       );
+
       if (!data.success) {
         return thunkAPI.rejectWithValue({
           message: data.message,
         });
       }
+
       sessionStorage.setItem("token", data.token);
+
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -41,10 +44,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (formData, thunkAPI) => {
     try {
-      const { data } = await axios.post(
-        `${backendUrl}/login`,
-        formData
-      );
+      const { data } = await axios.post(`${backendUrl}/login`, formData);
       if (!data.success) {
         return thunkAPI.rejectWithValue({
           message: data.message,
@@ -56,10 +56,10 @@ export const loginUser = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data || {
           message: "Something Went Wrong",
-        }
+        },
       );
     }
-  }
+  },
 );
 
 export const getUserData = createAsyncThunk(
@@ -68,14 +68,11 @@ export const getUserData = createAsyncThunk(
     try {
       const token = sessionStorage.getItem("token");
 
-      const { data } = await axios.get(
-        `${backendUrl}/data`,
-        {
-          headers: {
-            token,
-          },
-        }
-      );
+      const { data } = await axios.get(`${backendUrl}/data`, {
+        headers: {
+          token,
+        },
+      });
       if (!data.success) {
         return thunkAPI.rejectWithValue(data);
       }
@@ -84,20 +81,19 @@ export const getUserData = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data || {
           message: "Something Went Wrong",
-        }
+        },
       );
     }
-  }
+  },
 );
 
 export const forgotPassword = createAsyncThunk(
   "user/forgotPassword",
   async (email, thunkAPI) => {
     try {
-      const { data } = await axios.post(
-        `${backendUrl}/forgot-password`,
-        { email }
-      );
+      const { data } = await axios.post(`${backendUrl}/forgot-password`, {
+        email,
+      });
       if (!data.success) {
         return thunkAPI.rejectWithValue(data);
       }
@@ -106,23 +102,20 @@ export const forgotPassword = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data || {
           message: "Something Went Wrong",
-        }
+        },
       );
     }
-  }
+  },
 );
 
 export const verifyOtp = createAsyncThunk(
   "user/verifyOtp",
   async ({ email, otp }, thunkAPI) => {
     try {
-      const { data } = await axios.post(
-        `${backendUrl}/verify-otp`,
-        {
-          email,
-          otp,
-        }
-      );
+      const { data } = await axios.post(`${backendUrl}/verify-otp`, {
+        email,
+        otp,
+      });
       if (!data.success) {
         return thunkAPI.rejectWithValue(data);
       }
@@ -131,22 +124,17 @@ export const verifyOtp = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data || {
           message: "Something Went Wrong",
-        }
+        },
       );
     }
-  }
+  },
 );
-
 
 export const resendOtp = createAsyncThunk(
   "user/resendOtp",
   async (email, thunkAPI) => {
     try {
-
-      const { data } = await axios.post(
-        `${backendUrl}/resend-otp`,
-        { email }
-      );
+      const { data } = await axios.post(`${backendUrl}/resend-otp`, { email });
       if (!data.success) {
         return thunkAPI.rejectWithValue(data);
       }
@@ -155,10 +143,10 @@ export const resendOtp = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data || {
           message: "Something Went Wrong",
-        }
+        },
       );
     }
-  }
+  },
 );
 
 export const resetPassword = createAsyncThunk(
@@ -167,7 +155,7 @@ export const resetPassword = createAsyncThunk(
     try {
       const { data } = await axios.post(
         `${backendUrl}/reset-password`,
-        formData
+        formData,
       );
       if (!data.success) {
         return thunkAPI.rejectWithValue(data);
@@ -177,10 +165,10 @@ export const resetPassword = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data || {
           message: "Something Went Wrong",
-        }
+        },
       );
     }
-  }
+  },
 );
 
 const userSlice = createSlice({
@@ -223,8 +211,8 @@ const userSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
-        state.success = false;
         state.error = action.payload?.message;
+        state.message = action.payload?.message;
       })
 
       // LOGIN
@@ -324,9 +312,6 @@ const userSlice = createSlice({
   },
 });
 
-export const {
-  logoutUser,
-  clearMessage,
-} = userSlice.actions;
+export const { logoutUser, clearMessage } = userSlice.actions;
 
 export default userSlice.reducer;

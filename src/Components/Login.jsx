@@ -134,24 +134,32 @@ const Login = ({ setShowLogin }) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     if (state === "register") {
-      if (!validateRegister()) return;
-      const result = await dispatch(
-  registerUser({
-    name: registerData.name,
-    email: registerData.email,
-    password: registerData.password,
-    mobileNumber: registerData.mobile,
-    age: "18",
-    addressLine1: registerData.address1,
-    addressLine2: registerData.address2,
-    pincode: registerData.pincode,
-  })
-);
-      if (result.payload?.success) {
-        setShowLogin(false);
-      }
-      return;
-    }
+  if (!validateRegister()) return;
+
+  const result = await dispatch(
+    registerUser({
+      name: registerData.name,
+      email: registerData.email,
+      password: registerData.password,
+      mobileNumber: registerData.mobile,
+      age: "18",
+      addressLine1: registerData.address1,
+      addressLine2: registerData.address2,
+      pincode: registerData.pincode,
+    })
+  );
+
+  if (registerUser.fulfilled.match(result)) {
+    toast.success(result.payload.message);
+    setShowLogin(false);
+  } else {
+    toast.error(
+      result.payload?.message || "Something Went Wrong"
+    );
+  }
+
+  return;
+}
     if (state === "login") {
      if (!validateLogin()) return;
       const result = await dispatch(loginUser(loginData));
